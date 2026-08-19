@@ -1,4 +1,19 @@
-// !$*UTF8*$!
+const fs = require('fs');
+const path = require('path');
+
+const baseDir = __dirname;
+const tgPanelDir = path.join(baseDir, 'TGPanelApp');
+const xcodeDir = path.join(baseDir, 'TGPanel.xcodeproj');
+const workflowsDir = path.join(baseDir, '.github', 'workflows');
+
+// Remove old files if any
+['AppDelegate.swift', 'SceneDelegate.swift', 'ViewController.swift'].forEach(f => {
+  const p = path.join(tgPanelDir, f);
+  if (fs.existsSync(p)) fs.unlinkSync(p);
+});
+
+// Update Xcode project.pbxproj for Pure SwiftUI
+const pbxproj = `// !$*UTF8*$!
 {
 	archiveVersion = 1;
 	classes = {
@@ -220,3 +235,64 @@
 	};
 	rootObject = E0A1080028000000 /* Project object */;
 }
+`;
+fs.writeFileSync(path.join(xcodeDir, 'project.pbxproj'), pbxproj.trim());
+
+// Update Info.plist for Pure SwiftUI
+const infoPlist = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>zh_CN</string>
+    <key>CFBundleDisplayName</key>
+    <string>TG管理面板</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.tgpanel.liquidglass</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>3.5.0</string>
+    <key>CFBundleVersion</key>
+    <string>5</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>CFBundleIcons</key>
+    <dict>
+        <key>CFBundlePrimaryIcon</key>
+        <dict>
+            <key>CFBundleIconFiles</key>
+            <array>
+                <string>AppIcon</string>
+            </array>
+            <key>CFBundleIconName</key>
+            <string>AppIcon</string>
+        </dict>
+    </dict>
+    <key>UILaunchScreen</key>
+    <dict/>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>arm64</string>
+    </array>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+</dict>
+</plist>
+`;
+fs.writeFileSync(path.join(tgPanelDir, 'Info.plist'), infoPlist.trim());
+
+console.log('✅ 100% Pure Native SwiftUI architecture initialized (matching reference Kana/秋名山)!');
