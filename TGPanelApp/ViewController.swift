@@ -6,10 +6,11 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(red: 6/255, green: 8/255, blue: 13/255, alpha: 1.0)
+        view.backgroundColor = UIColor(red: 3/255, green: 6/255, blue: 12/255, alpha: 1.0)
         
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
+        config.preferences.javaScriptEnabled = true
         
         let preferences = WKWebpagePreferences()
         preferences.allowsContentJavaScript = true
