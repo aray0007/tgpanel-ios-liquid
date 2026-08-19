@@ -1,0 +1,21 @@
+{
+  "name": "TG 多账号管理面板",
+  "short_name": "TG面板",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#06080d",
+  "theme_color": "#06080d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "AppIcon60x60@2x.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    },
+    {
+      "src": "AppIcon60x60@3x.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

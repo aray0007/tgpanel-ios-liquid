@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TG面板">
+  <title>TG 多账号管理面板</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Dynamic Liquid Glow Background -->
+  <div class="liquid-ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="glass-toast">提示信息</div>
+
+  <!-- Main App Shell -->
+  <div class="app-container">
+
+    <!-- Glass Header -->
+    <header class="glass-header">
+      <div class="header-top">
+        <div class="brand-wrapper">
+          <div class="brand-logo-glass">✨</div>
+          <span class="brand-title">TG 管理面板</span>
+        </div>
+        <div class="server-badge" onclick="loadData()">
+          <span id="server-status-dot" class="status-dot"></span>
+          <span id="server-status-text">VPS 在线</span>
+          <span style="font-size:10px; opacity:0.6;">🔄</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tab 1: 账号 (Accounts) -->
+    <main id="tab-accounts" class="tab-content active">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        
+        <!-- Search & Quick Action Bar -->
+        <div class="glass-search-box">
+          <span style="opacity:0.6;">🔍</span>
+          <input type="text" id="account-search-input" placeholder="搜索手机号、ID、备注或名字...">
+        </div>
+
+        <!-- Filter Row -->
+        <div id="account-filter-row" class="filter-scroll-row">
+          <div class="glass-pill active" data-filter="all">全部 (<span id="acc-count-all">359</span>)</div>
+          <div class="glass-pill" data-filter="online">在线 (<span id="acc-count-online">358</span>)</div>
+          <div class="glass-pill" data-filter="offline">离线 / 异常 (<span id="acc-count-offline">1</span>)</div>
+        </div>
+
+        <!-- Quick Toolbar -->
+        <div style="display:flex; gap:10px; justify-content:space-between;">
+          <button class="glass-btn glass-btn-primary glass-btn-sm" onclick="triggerDailyCheck()" style="flex:1;">
+            🔍 在线巡检
+          </button>
+          <button class="glass-btn glass-btn-sm" onclick="triggerExportSessions()" style="flex:1;">
+            📦 导出 Session
+          </button>
+        </div>
+
+        <!-- Account List Grid -->
+        <div id="accounts-list" class="accounts-grid">
+          <!-- Loaded via app.js -->
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Tab 2: 任务 (Tasks) -->
+    <main id="tab-tasks" class="tab-content">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="font-size:18px; font-weight:700;">后台任务队列</h2>
+          <button class="glass-btn glass-btn-sm" onclick="loadTasks()">🔄 刷新状态</button>
+        </div>
+        
+        <div id="tasks-list" style="display:flex; flex-direction:column; gap:12px;">
+          <!-- Loaded via app.js -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Tab 3: 自动化 (Automations) -->
+    <main id="tab-automations" class="tab-content">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <h2 style="font-size:18px; font-weight:700;">快捷自动化动作</h2>
+        
+        <div class="auto-grid">
+          <!-- Auto Verify -->
+          <div class="glass-card auto-card-btn" onclick="triggerAutoVerify()">
+            <div class="auto-icon-box" style="color:var(--accent-cyan); box-shadow:0 0 16px rgba(0,210,255,0.3);">⚡</div>
+            <div>
+              <div class="auto-title">自动进群验证</div>
+              <div class="auto-desc">智能识别群按钮/验证码</div>
+            </div>
+          </div>
+
+          <!-- LuckyStar Lottery -->
+          <div class="glass-card auto-card-btn" onclick="triggerLuckyStar()">
+            <div class="auto-icon-box" style="color:#ff0080; box-shadow:0 0 16px rgba(255,0,128,0.3);">🎰</div>
+            <div>
+              <div class="auto-title">幸运星抽奖</div>
+              <div class="auto-desc">批量参与幸运星福利</div>
+            </div>
+          </div>
+
+          <!-- Daily Checkin -->
+          <div class="glass-card auto-card-btn" onclick="triggerDailyCheck()">
+            <div class="auto-icon-box" style="color:var(--accent-mint); box-shadow:0 0 16px rgba(0,242,254,0.3);">📅</div>
+            <div>
+              <div class="auto-title">每日自动签到</div>
+              <div class="auto-desc">Bot 签到与打卡自动化</div>
+            </div>
+          </div>
+
+          <!-- Export Sessions -->
+          <div class="glass-card auto-card-btn" onclick="triggerExportSessions()">
+            <div class="auto-icon-box" style="color:var(--accent-purple); box-shadow:0 0 16px rgba(121,40,202,0.3);">📦</div>
+            <div>
+              <div class="auto-title">导出 Session</div>
+              <div class="auto-desc">全量会话打包为 ZIP</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Tab 4: 设置 (Settings) -->
+    <main id="tab-settings" class="tab-content">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <h2 style="font-size:18px; font-weight:700;">系统与连接设置</h2>
+
+        <div class="glass-card" style="display:flex; flex-direction:column; gap:14px;">
+          <div style="font-size:15px; font-weight:600;">VPS 服务器直连地址</div>
+          <div class="glass-search-box">
+            <input type="text" id="server-url-input" placeholder="http://207.174.6.36:5000">
+          </div>
+          <button class="glass-btn glass-btn-primary" onclick="saveServerSettings()">
+            💾 保存并应用连接
+          </button>
+        </div>
+
+        <div class="glass-card" style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:var(--text-secondary);">
+          <div style="font-weight:700; font-size:15px; color:#fff;">关于 TGPanel iOS</div>
+          <p>版本: <strong>v3.2.0 (Liquid Glass Edition)</strong></p>
+          <p>风格: <strong>液态弥散玻璃 (Liquid Glassmorphism)</strong></p>
+          <p>模式: <strong>独立客户端直连 (VPS 零修改架构)</strong></p>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Realtime Log Terminal Sheet Modal -->
+  <div id="log-modal" class="glass-modal-overlay" onclick="if(event.target===this)closeLogModal()">
+    <div class="glass-modal-sheet">
+      <div class="sheet-handle"></div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 id="log-modal-title" style="font-size:17px; font-weight:700;">实时任务日志</h3>
+        <button class="glass-btn glass-btn-sm" onclick="closeLogModal()">✕ 关闭</button>
+      </div>
+      <div id="terminal-log-content" class="terminal-log-view">
+        正在拉取最新控制台输出...
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Glass Tab Bar (iOS Native Style) -->
+  <nav class="glass-tabbar">
+    <div class="tabbar-item active" data-tab="accounts">
+      <span class="tab-icon">👥</span>
+      <span>账号</span>
+    </div>
+    <div class="tabbar-item" data-tab="tasks" style="position:relative;">
+      <span class="tab-icon">⚡</span>
+      <span>任务</span>
+      <span id="task-running-badge" style="display:none; position:absolute; top:4px; right:12px; background:var(--accent-cyan); color:#000; font-size:9px; font-weight:800; padding:1px 5px; border-radius:10px;"></span>
+    </div>
+    <div class="tabbar-item" data-tab="automations">
+      <span class="tab-icon">🚀</span>
+      <span>自动化</span>
+    </div>
+    <div class="tabbar-item" data-tab="settings">
+      <span class="tab-icon">⚙️</span>
+      <span>设置</span>
+    </div>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
