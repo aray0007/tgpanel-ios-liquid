@@ -3,29 +3,32 @@ import SwiftUI
 @main
 struct TGPanelApp: App {
     @StateObject private var vm = PanelViewModel()
+    @StateObject private var theme = ThemeManager()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(vm)
+                .environmentObject(theme)
                 .preferredColorScheme(.dark)
         }
     }
 }
 
-// MARK: - Main ContentView with Custom Floating Liquid Glass TabBar
+// MARK: - Main ContentView with Dynamic Themed Liquid Glass
 struct ContentView: View {
     @EnvironmentObject var vm: PanelViewModel
+    @EnvironmentObject var theme: ThemeManager
     @State private var selectedTab = 0
     @Namespace private var tabNamespace
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            // 1. Live Ambient Dynamic Liquid Plasma Canvas
-            LiquidPlasmaMeshBackground()
+            // 1. Dynamic Liquid Mesh Background (reacts to Theme)
+            KanaDynamicLiquidMesh(theme: theme.currentTheme)
                 .ignoresSafeArea()
             
-            // 2. Active Screen Content
+            // 2. Tab Views
             Group {
                 switch selectedTab {
                 case 0:
@@ -41,13 +44,12 @@ struct ContentView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            // Extra bottom padding for floating liquid tabbar
-            .padding(.bottom, 80)
+            .padding(.bottom, 78)
             
-            // 3. Floating VisionOS / iOS 27 Liquid Glass Capsule TabBar
-            FloatingLiquidGlassTabBar(selectedTab: $selectedTab, namespace: tabNamespace)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 12)
+            // 3. Floating Liquid Glass TabBar (Matching Kana / 秋名山)
+            KanaLiquidTabBar(selectedTab: $selectedTab, namespace: tabNamespace, theme: theme.currentTheme)
+                .padding(.horizontal, 22)
+                .padding(.bottom, 10)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(isPresented: $vm.showLogSheet) {
@@ -56,103 +58,63 @@ struct ContentView: View {
     }
 }
 
-// MARK: - Dynamic Organic Liquid Plasma Mesh Background
-struct LiquidPlasmaMeshBackground: View {
-    @State private var phase1: CGFloat = 0
-    @State private var phase2: CGFloat = 0
-    @State private var phase3: CGFloat = 0
+// MARK: - Kana Dynamic Liquid Mesh Background
+struct KanaDynamicLiquidMesh: View {
+    let theme: AppTheme
+    @State private var animate = false
     
     var body: some View {
         ZStack {
-            // Deep Obsidian Void Base
-            Color(red: 2/255, green: 5/255, blue: 14/255)
+            Color(red: 3/255, green: 6/255, blue: 14/255)
             
-            // Liquid Orb 1: Electric Cyan Plasma
+            // Ambient Liquid Orb 1 (Primary Theme Color)
             Circle()
                 .fill(
                     RadialGradient(
-                        colors: [Color(red: 0/255, green: 240/255, blue: 255/255).opacity(0.55), .clear],
-                        center: .center,
-                        startRadius: 10,
-                        endRadius: 180
-                    )
-                )
-                .frame(width: 360, height: 360)
-                .offset(
-                    x: cos(phase1) * 120 - 40,
-                    y: sin(phase1) * 150 - 180
-                )
-                .blur(radius: 50)
-            
-            // Liquid Orb 2: Vivid Ultra-Violet Plasma
-            Circle()
-                .fill(
-                    RadialGradient(
-                        colors: [Color(red: 168/255, green: 40/255, blue: 255/255).opacity(0.6), .clear],
+                        colors: [theme.primaryColor.opacity(0.6), .clear],
                         center: .center,
                         startRadius: 10,
                         endRadius: 200
                     )
                 )
-                .frame(width: 400, height: 400)
-                .offset(
-                    x: sin(phase2) * 130 + 60,
-                    y: cos(phase2) * 160 + 100
-                )
-                .blur(radius: 60)
+                .frame(width: 380, height: 380)
+                .offset(x: animate ? -70 : 80, y: animate ? -160 : -40)
+                .blur(radius: 65)
             
-            // Liquid Orb 3: Laser Hot-Pink Plasma
+            // Ambient Liquid Orb 2 (Secondary Theme Color)
             Circle()
                 .fill(
                     RadialGradient(
-                        colors: [Color(red: 255/255, green: 0/255, blue: 128/255).opacity(0.45), .clear],
+                        colors: [theme.secondaryColor.opacity(0.55), .clear],
                         center: .center,
                         startRadius: 10,
-                        endRadius: 160
+                        endRadius: 220
                     )
                 )
-                .frame(width: 320, height: 320)
-                .offset(
-                    x: cos(phase3) * 100 - 80,
-                    y: sin(phase3) * 120 + 220
-                )
+                .frame(width: 420, height: 420)
+                .offset(x: animate ? 100 : -80, y: animate ? 120 : 200)
+                .blur(radius: 75)
+            
+            // Subtle White Core Specular Glow
+            Circle()
+                .fill(Color.white.opacity(0.08))
+                .frame(width: 260, height: 260)
+                .offset(x: animate ? 40 : -40, y: animate ? 40 : -40)
                 .blur(radius: 50)
-            
-            // Liquid Orb 4: Emerald Aqua Glow
-            Circle()
-                .fill(
-                    RadialGradient(
-                        colors: [Color(red: 0/255, green: 255/255, blue: 160/255).opacity(0.4), .clear],
-                        center: .center,
-                        startRadius: 10,
-                        endRadius: 150
-                    )
-                )
-                .frame(width: 300, height: 300)
-                .offset(
-                    x: sin(phase1) * 90 + 90,
-                    y: cos(phase3) * 110 - 50
-                )
-                .blur(radius: 45)
         }
         .onAppear {
-            withAnimation(.easeInOut(duration: 7.0).repeatForever(autoreverses: true)) {
-                phase1 = .pi * 2
-            }
-            withAnimation(.easeInOut(duration: 9.0).repeatForever(autoreverses: true)) {
-                phase2 = .pi * 2
-            }
-            withAnimation(.easeInOut(duration: 8.0).repeatForever(autoreverses: true)) {
-                phase3 = .pi * 2
+            withAnimation(.easeInOut(duration: 6.5).repeatForever(autoreverses: true)) {
+                animate.toggle()
             }
         }
     }
 }
 
-// MARK: - Floating Liquid Glass TabBar (The Ultimate Glass Experience)
-struct FloatingLiquidGlassTabBar: View {
+// MARK: - Kana Floating Liquid TabBar
+struct KanaLiquidTabBar: View {
     @Binding var selectedTab: Int
     var namespace: Namespace.ID
+    let theme: AppTheme
     @EnvironmentObject var vm: PanelViewModel
     
     let tabs: [(index: Int, name: String, icon: String)] = [
@@ -169,25 +131,24 @@ struct FloatingLiquidGlassTabBar: View {
                 Button {
                     let gen = UIImpactFeedbackGenerator(style: .medium)
                     gen.impactOccurred()
-                    withAnimation(.spring(response: 0.38, dampingFraction: 0.72)) {
+                    withAnimation(.spring(response: 0.36, dampingFraction: 0.72)) {
                         selectedTab = tab.index
                     }
                 } label: {
-                    VStack(spacing: 4) {
+                    VStack(spacing: 3) {
                         ZStack {
                             Image(systemName: tab.icon)
-                                .font(.system(size: 20, weight: isSelected ? .bold : .medium))
+                                .font(.system(size: 19, weight: isSelected ? .bold : .medium))
                                 .foregroundColor(isSelected ? .white : .white.opacity(0.45))
-                                .shadow(color: isSelected ? .cyan : .clear, radius: 8)
+                                .shadow(color: isSelected ? theme.primaryColor : .clear, radius: 10)
                             
-                            // Badge for running tasks
                             if tab.index == 1 && vm.runningTasksCount > 0 {
                                 Text("\(vm.runningTasksCount)")
                                     .font(.system(size: 9, weight: .heavy))
                                     .foregroundColor(.black)
                                     .padding(.horizontal, 5)
                                     .padding(.vertical, 2)
-                                    .background(Color.cyan)
+                                    .background(theme.primaryColor)
                                     .clipShape(Capsule())
                                     .offset(x: 12, y: -8)
                             }
@@ -198,104 +159,98 @@ struct FloatingLiquidGlassTabBar: View {
                             .foregroundColor(isSelected ? .white : .white.opacity(0.45))
                     }
                     .frame(maxWidth: .infinity)
-                    .frame(height: 56)
+                    .frame(height: 54)
                     .contentShape(Rectangle())
                     .background {
                         if isSelected {
-                            // Fluid Lava / Glass Bubble Indicator
-                            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                                .fill(
-                                    LinearGradient(
-                                        colors: [
-                                            Color.cyan.opacity(0.45),
-                                            Color.purple.opacity(0.55)
-                                        ],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
+                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                .fill(theme.gradient.opacity(0.55))
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                    RoundedRectangle(cornerRadius: 22, style: .continuous)
                                         .stroke(
                                             LinearGradient(
-                                                colors: [.white.opacity(0.9), .cyan.opacity(0.5), .white.opacity(0.2)],
+                                                colors: [.white.opacity(0.85), theme.primaryColor.opacity(0.6), .white.opacity(0.2)],
                                                 startPoint: .topLeading,
                                                 endPoint: .bottomTrailing
                                             ),
                                             lineWidth: 1.5
                                         )
                                 )
-                                .shadow(color: Color.cyan.opacity(0.4), radius: 12, y: 4)
-                                .matchedGeometryEffect(id: "LIQUID_TAB_BUBBLE", in: namespace)
+                                .shadow(color: theme.primaryColor.opacity(0.45), radius: 12, y: 3)
+                                .matchedGeometryEffect(id: "KANA_TAB_INDICATOR", in: namespace)
                         }
                     }
                 }
             }
         }
-        .padding(6)
+        .padding(5)
         .background(.ultraThinMaterial)
         .background(Color.white.opacity(0.04))
-        .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .stroke(
                     LinearGradient(
-                        colors: [.white.opacity(0.6), .white.opacity(0.15), .cyan.opacity(0.3)],
+                        colors: [.white.opacity(0.5), .white.opacity(0.1), theme.primaryColor.opacity(0.3)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
                     lineWidth: 1.5
                 )
         )
-        .shadow(color: Color.black.opacity(0.7), radius: 30, y: 15)
-        .shadow(color: Color.cyan.opacity(0.15), radius: 20)
+        .shadow(color: Color.black.opacity(0.7), radius: 24, y: 12)
+        .shadow(color: theme.primaryColor.opacity(0.2), radius: 15)
     }
 }
 
-// MARK: - View Modifier for True Liquid Glass Cards
-struct LiquidGlassCardModifier: ViewModifier {
-    var cornerRadius: CGFloat = 24
+// MARK: - Floating Theme Selector (Matching Kana / 秋名山 Floating Palette)
+struct FloatingThemeSelector: View {
+    @EnvironmentObject var theme: ThemeManager
+    @State private var showSelector = false
     
-    func body(content: Content) -> some View {
-        content
+    var body: some View {
+        Menu {
+            ForEach(AppTheme.allCases) { t in
+                Button {
+                    let gen = UIImpactFeedbackGenerator(style: .light)
+                    gen.impactOccurred()
+                    theme.currentTheme = t
+                } label: {
+                    HStack {
+                        Text(t.rawValue)
+                        if theme.currentTheme == t {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 5) {
+                Circle()
+                    .fill(theme.currentTheme.gradient)
+                    .frame(width: 14, height: 14)
+                    .shadow(color: theme.currentTheme.primaryColor, radius: 4)
+                Text(theme.currentTheme.rawValue)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
             .background(.ultraThinMaterial)
-            .background(Color.white.opacity(0.05))
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(0.75),
-                                Color.cyan.opacity(0.4),
-                                Color.purple.opacity(0.25),
-                                Color.white.opacity(0.1)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1.5
-                    )
-            )
-            .shadow(color: Color.black.opacity(0.55), radius: 16, y: 8)
-            .shadow(color: Color.cyan.opacity(0.12), radius: 15)
+            .clipShape(Capsule())
+            .overlay(Capsule().stroke(Color.white.opacity(0.3), lineWidth: 1))
+        }
     }
 }
 
-extension View {
-    func liquidGlassCard(cornerRadius: CGFloat = 24) -> some View {
-        modifier(LiquidGlassCardModifier(cornerRadius: cornerRadius))
-    }
-}
-
-// MARK: - 1. Accounts View (Pure Native Liquid Glass)
+// MARK: - 1. Accounts View (Kana Inset Grouped Style)
 struct AccountsView: View {
     @EnvironmentObject var vm: PanelViewModel
+    @EnvironmentObject var theme: ThemeManager
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // Background transparent so mesh shines through
                 Color.clear
                 
                 ScrollView {
@@ -303,13 +258,13 @@ struct AccountsView: View {
                         // Filter Pills
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
-                                FilterPill(title: "全量 (\(vm.accounts.count))", filterKey: "all", selected: vm.selectedFilter) {
+                                FilterPill(title: "全量 (\(vm.accounts.count))", filterKey: "all", selected: vm.selectedFilter, theme: theme.currentTheme) {
                                     vm.selectedFilter = "all"
                                 }
-                                FilterPill(title: "在线 (\(vm.onlineCount))", filterKey: "online", selected: vm.selectedFilter) {
+                                FilterPill(title: "在线 (\(vm.onlineCount))", filterKey: "online", selected: vm.selectedFilter, theme: theme.currentTheme) {
                                     vm.selectedFilter = "online"
                                 }
-                                FilterPill(title: "离线 (\(vm.offlineCount))", filterKey: "offline", selected: vm.selectedFilter) {
+                                FilterPill(title: "离线 (\(vm.offlineCount))", filterKey: "offline", selected: vm.selectedFilter, theme: theme.currentTheme) {
                                     vm.selectedFilter = "offline"
                                 }
                             }
@@ -331,15 +286,13 @@ struct AccountsView: View {
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 14)
-                                .background(
-                                    LinearGradient(colors: [.cyan, .blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)
-                                )
+                                .background(theme.currentTheme.gradient)
                                 .cornerRadius(18)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 18)
                                         .stroke(Color.white.opacity(0.7), lineWidth: 1.5)
                                 )
-                                .shadow(color: Color.cyan.opacity(0.4), radius: 10, y: 4)
+                                .shadow(color: theme.currentTheme.primaryColor.opacity(0.4), radius: 10, y: 4)
                             }
                             
                             if let exportUrl = URL(string: "\(vm.serverUrl)/api/sessions/export") {
@@ -352,16 +305,21 @@ struct AccountsView: View {
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 14)
-                                    .liquidGlassCard(cornerRadius: 18)
+                                    .background(.ultraThinMaterial)
+                                    .cornerRadius(18)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 18)
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                    )
                                 }
                             }
                         }
                         .padding(.horizontal)
                         
-                        // Accounts List
+                        // Accounts List (Kana Style Cards)
                         LazyVStack(spacing: 12) {
                             ForEach(vm.filteredAccounts) { acc in
-                                AccountRowCard(account: acc)
+                                KanaAccountCard(account: acc, theme: theme.currentTheme)
                             }
                         }
                         .padding(.horizontal)
@@ -369,45 +327,64 @@ struct AccountsView: View {
                     .padding(.top, 12)
                 }
             }
-            .navigationTitle("TG 账号管理")
+            .navigationTitle("TG 账号列表")
             .searchable(text: $vm.searchText, prompt: "搜索手机号、ID、备注或名字...")
             .refreshable {
                 await vm.fetchAccounts()
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 6) {
-                        Circle()
-                            .fill(vm.isOnline ? Color.green : Color.red)
-                            .frame(width: 8, height: 8)
-                            .shadow(color: vm.isOnline ? .green : .red, radius: 6)
-                        Text(vm.isOnline ? "VPS 在线" : "离线")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.white)
+                    HStack(spacing: 8) {
+                        FloatingThemeSelector()
+                        
+                        HStack(spacing: 5) {
+                            Circle()
+                                .fill(vm.isOnline ? Color.green : Color.red)
+                                .frame(width: 8, height: 8)
+                                .shadow(color: vm.isOnline ? .green : .red, radius: 4)
+                            Text(vm.isOnline ? "在线" : "离线")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Color.white.opacity(0.25), lineWidth: 1))
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .liquidGlassCard(cornerRadius: 20)
                 }
             }
         }
     }
 }
 
-// MARK: - Account Row Glass Card
-struct AccountRowCard: View {
+// MARK: - Kana Style Account Card
+struct KanaAccountCard: View {
     let account: AccountItem
+    let theme: AppTheme
     @State private var copied = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(account.isOnline ? Color.green : Color.red)
-                        .frame(width: 8, height: 8)
-                        .shadow(color: account.isOnline ? .green : .red, radius: 4)
-                    
+        HStack(spacing: 14) {
+            // Left: Glowing Avatar Container
+            ZStack {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(theme.gradient.opacity(0.35))
+                    .frame(width: 50, height: 50)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                    )
+                
+                Image(systemName: "paperplane.fill")
+                    .font(.system(size: 22))
+                    .foregroundColor(.white)
+                    .shadow(color: theme.primaryColor, radius: 6)
+            }
+            
+            // Middle: Account Info
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
                     Text(account.name ?? "未命名")
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.white)
@@ -419,9 +396,7 @@ struct AccountRowCard: View {
                     }
                 }
                 
-                Spacer()
-                
-                // Copy Phone Pill
+                // Phone & Copy
                 Button {
                     UIPasteboard.general.string = account.phone ?? ""
                     let generator = UINotificationFeedbackGenerator()
@@ -432,57 +407,64 @@ struct AccountRowCard: View {
                     HStack(spacing: 4) {
                         Text(account.phone ?? "")
                             .font(.system(size: 13, weight: .bold, design: .monospaced))
+                            .foregroundColor(theme.primaryColor)
                         Image(systemName: copied ? "checkmark" : "doc.on.doc")
-                            .font(.system(size: 11))
+                            .font(.system(size: 10))
+                            .foregroundColor(theme.primaryColor.opacity(0.8))
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(Color.cyan.opacity(0.25))
-                    .foregroundColor(.cyan)
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.cyan.opacity(0.6), lineWidth: 1)
-                    )
                 }
+                
+                Text("TG ID: \(account.tg_user_id ?? "-")")
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.45))
             }
             
-            HStack(spacing: 12) {
-                HStack {
-                    Text("TG ID:")
-                        .foregroundColor(.white.opacity(0.5))
-                    Text(account.tg_user_id ?? "-")
-                        .foregroundColor(.white)
-                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                }
-                .font(.system(size: 12))
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(Color.white.opacity(0.06))
-                .cornerRadius(8)
-                
-                HStack {
-                    Text("状态:")
-                        .foregroundColor(.white.opacity(0.5))
-                    Text(account.isOnline ? "正常在线" : "异常离线")
-                        .foregroundColor(account.isOnline ? .green : .red)
+            Spacer()
+            
+            // Right: Online / Offline Liquid Capsule
+            VStack(alignment: .trailing, spacing: 4) {
+                HStack(spacing: 5) {
+                    Circle()
+                        .fill(account.isOnline ? Color.green : Color.red)
+                        .frame(width: 7, height: 7)
+                        .shadow(color: account.isOnline ? .green : .red, radius: 4)
+                    Text(account.isOnline ? "在线" : "离线")
                         .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(account.isOnline ? .green : .red)
                 }
-                .font(.system(size: 12))
                 .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(Color.white.opacity(0.06))
-                .cornerRadius(8)
+                .padding(.vertical, 5)
+                .background(account.isOnline ? Color.green.opacity(0.15) : Color.red.opacity(0.15))
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule()
+                        .stroke(account.isOnline ? Color.green.opacity(0.4) : Color.red.opacity(0.4), lineWidth: 1)
+                )
             }
         }
-        .padding(18)
-        .liquidGlassCard(cornerRadius: 22)
+        .padding(14)
+        .background(.ultraThinMaterial)
+        .background(Color.white.opacity(0.04))
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(
+                    LinearGradient(
+                        colors: [.white.opacity(0.6), .white.opacity(0.1), theme.primaryColor.opacity(0.2)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1.5
+                )
+        )
+        .shadow(color: Color.black.opacity(0.4), radius: 12, y: 5)
     }
 }
 
-// MARK: - 2. Tasks Tab View
+// MARK: - 2. Tasks View
 struct TasksView: View {
     @EnvironmentObject var vm: PanelViewModel
+    @EnvironmentObject var theme: ThemeManager
     
     var body: some View {
         NavigationStack {
@@ -495,7 +477,7 @@ struct TasksView: View {
                             VStack(spacing: 14) {
                                 Image(systemName: "bolt.slash.fill")
                                     .font(.system(size: 44))
-                                    .foregroundColor(.cyan.opacity(0.5))
+                                    .foregroundColor(theme.primaryColor.opacity(0.5))
                                 Text("暂无后台运行中的任务")
                                     .font(.system(size: 16, weight: .semibold))
                                     .foregroundColor(.white.opacity(0.7))
@@ -504,7 +486,7 @@ struct TasksView: View {
                             .padding(.vertical, 80)
                         } else {
                             ForEach(Array(vm.tasks.values)) { task in
-                                TaskRowCard(task: task)
+                                KanaTaskCard(task: task, theme: theme.currentTheme)
                             }
                         }
                     }
@@ -515,13 +497,19 @@ struct TasksView: View {
             .refreshable {
                 await vm.fetchTasks()
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    FloatingThemeSelector()
+                }
+            }
         }
     }
 }
 
-struct TaskRowCard: View {
+struct KanaTaskCard: View {
     @EnvironmentObject var vm: PanelViewModel
     let task: TaskInfo
+    let theme: AppTheme
     
     var progress: Double {
         guard let total = task.total, total > 0, let current = task.current else { return 0 }
@@ -529,7 +517,7 @@ struct TaskRowCard: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text(task.type ?? "任务 #\(task.id)")
                     .font(.system(size: 16, weight: .bold))
@@ -541,18 +529,17 @@ struct TaskRowCard: View {
                     .font(.system(size: 11, weight: .heavy))
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
-                    .background(Color.cyan.opacity(0.3))
-                    .foregroundColor(.cyan)
+                    .background(theme.primaryColor.opacity(0.25))
+                    .foregroundColor(theme.primaryColor)
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.cyan.opacity(0.6), lineWidth: 1)
+                            .stroke(theme.primaryColor.opacity(0.5), lineWidth: 1)
                     )
             }
             
-            // Progress
             ProgressView(value: progress)
-                .tint(.cyan)
+                .tint(theme.primaryColor)
             
             HStack {
                 Text("进度: \(task.current ?? 0) / \(task.total ?? 0) (\(Int(progress * 100))%)")
@@ -571,8 +558,8 @@ struct TaskRowCard: View {
                     } label: {
                         Text("⏸ 暂停")
                             .font(.system(size: 12, weight: .bold))
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
                             .background(Color.white.opacity(0.12))
                             .foregroundColor(.white)
                             .cornerRadius(10)
@@ -583,8 +570,8 @@ struct TaskRowCard: View {
                     } label: {
                         Text("▶️ 继续")
                             .font(.system(size: 12, weight: .bold))
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
                             .background(Color.white.opacity(0.12))
                             .foregroundColor(.white)
                             .cornerRadius(10)
@@ -596,8 +583,8 @@ struct TaskRowCard: View {
                 } label: {
                     Text("📜 实时日志")
                         .font(.system(size: 12, weight: .bold))
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 7)
                         .background(Color.white.opacity(0.12))
                         .foregroundColor(.white)
                         .cornerRadius(10)
@@ -610,8 +597,8 @@ struct TaskRowCard: View {
                 } label: {
                     Text("🛑 终止")
                         .font(.system(size: 12, weight: .bold))
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 7)
                         .background(Color.red.opacity(0.3))
                         .foregroundColor(.red)
                         .cornerRadius(10)
@@ -622,14 +609,21 @@ struct TaskRowCard: View {
                 }
             }
         }
-        .padding(18)
-        .liquidGlassCard(cornerRadius: 22)
+        .padding(16)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(Color.white.opacity(0.25), lineWidth: 1.5)
+        )
+        .shadow(color: Color.black.opacity(0.4), radius: 12, y: 5)
     }
 }
 
-// MARK: - 3. Automations Tab View
+// MARK: - 3. Automations View
 struct AutomationsView: View {
     @EnvironmentObject var vm: PanelViewModel
+    @EnvironmentObject var theme: ThemeManager
     @State private var showAutoVerifyAlert = false
     @State private var groupLink = ""
     @State private var showLuckyAlert = false
@@ -644,21 +638,21 @@ struct AutomationsView: View {
                     VStack(spacing: 16) {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                             
-                            ActionCard(title: "自动进群验证", desc: "智能过人机验证", icon: "shield.righthalf.filled", color: .cyan) {
+                            KanaActionCard(title: "自动进群验证", desc: "智能过人机验证", icon: "shield.righthalf.filled", color: theme.currentTheme.primaryColor) {
                                 showAutoVerifyAlert = true
                             }
                             
-                            ActionCard(title: "幸运星抽奖", desc: "批量全量账号福利", icon: "star.fill", color: .pink) {
+                            KanaActionCard(title: "幸运星抽奖", desc: "批量全量账号福利", icon: "star.fill", color: .pink) {
                                 showLuckyAlert = true
                             }
                             
-                            ActionCard(title: "每日自动签到", desc: "多账号 Bot 自动化", icon: "checkmark.seal.fill", color: .green) {
+                            KanaActionCard(title: "每日自动签到", desc: "多账号 Bot 自动化", icon: "checkmark.seal.fill", color: .green) {
                                 Task { await vm.triggerCheckOnline() }
                             }
                             
                             if let exportUrl = URL(string: "\(vm.serverUrl)/api/sessions/export") {
                                 Link(destination: exportUrl) {
-                                    ActionCardContent(title: "导出全量会话", desc: "打包 .session 文件", icon: "archivebox.fill", color: .purple)
+                                    KanaActionCardContent(title: "导出全量会话", desc: "打包 .session 文件", icon: "archivebox.fill", color: .purple)
                                 }
                             }
                         }
@@ -667,6 +661,11 @@ struct AutomationsView: View {
                 }
             }
             .navigationTitle("自动化执行器")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    FloatingThemeSelector()
+                }
+            }
             .alert("自动进群验证", isPresented: $showAutoVerifyAlert) {
                 TextField("目标群链接 (例如: @group)", text: $groupLink)
                 Button("开始验证") {
@@ -685,7 +684,7 @@ struct AutomationsView: View {
     }
 }
 
-struct ActionCard: View {
+struct KanaActionCard: View {
     let title: String
     let desc: String
     let icon: String
@@ -698,12 +697,12 @@ struct ActionCard: View {
             gen.impactOccurred()
             action()
         }) {
-            ActionCardContent(title: title, desc: desc, icon: icon, color: color)
+            KanaActionCardContent(title: title, desc: desc, icon: icon, color: color)
         }
     }
 }
 
-struct ActionCardContent: View {
+struct KanaActionCardContent: View {
     let title: String
     let desc: String
     let icon: String
@@ -712,16 +711,16 @@ struct ActionCardContent: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Image(systemName: icon)
-                .font(.system(size: 26, weight: .bold))
+                .font(.system(size: 24, weight: .bold))
                 .foregroundColor(color)
-                .frame(width: 52, height: 52)
+                .frame(width: 48, height: 48)
                 .background(color.opacity(0.25))
                 .cornerRadius(16)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(color.opacity(0.6), lineWidth: 1.5)
                 )
-                .shadow(color: color.opacity(0.4), radius: 10)
+                .shadow(color: color.opacity(0.4), radius: 8)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
@@ -734,14 +733,21 @@ struct ActionCardContent: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .liquidGlassCard(cornerRadius: 24)
+        .padding(16)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(Color.white.opacity(0.25), lineWidth: 1.5)
+        )
+        .shadow(color: Color.black.opacity(0.4), radius: 12, y: 5)
     }
 }
 
-// MARK: - 4. Settings Tab View
+// MARK: - 4. Settings View
 struct SettingsView: View {
     @EnvironmentObject var vm: PanelViewModel
+    @EnvironmentObject var theme: ThemeManager
     @State private var serverAddress: String = ""
     @State private var savedAlert = false
     
@@ -764,7 +770,7 @@ struct SettingsView: View {
                                 .cornerRadius(14)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 14)
-                                        .stroke(Color.cyan.opacity(0.5), lineWidth: 1)
+                                        .stroke(theme.primaryColor.opacity(0.5), lineWidth: 1)
                                 )
                                 .autocorrectionDisabled()
                                 .textInputAutocapitalization(.never)
@@ -781,49 +787,58 @@ struct SettingsView: View {
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 14)
-                                    .background(LinearGradient(colors: [.cyan, .blue], startPoint: .leading, endPoint: .trailing))
+                                    .background(theme.currentTheme.gradient)
                                     .cornerRadius(14)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 14)
                                             .stroke(Color.white.opacity(0.7), lineWidth: 1.5)
                                     )
-                                    .shadow(color: Color.cyan.opacity(0.4), radius: 10)
+                                    .shadow(color: theme.primaryColor.opacity(0.4), radius: 10)
                             }
                         }
                         .padding(20)
-                        .liquidGlassCard(cornerRadius: 24)
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .stroke(Color.white.opacity(0.25), lineWidth: 1.5)
+                        )
                         
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
-                                Text("💎 TGPanel Vision Edition")
+                                Text("💎 TGPanel (秋名山同款主题引擎)")
                                     .font(.system(size: 16, weight: .bold))
                                     .foregroundColor(.white)
                                 Spacer()
-                                Text("v3.6.0")
+                                Text("v3.7.0")
                                     .font(.system(size: 12, weight: .bold))
-                                    .foregroundColor(.cyan)
+                                    .foregroundColor(theme.primaryColor)
                             }
                             
                             Divider().background(Color.white.opacity(0.2))
                             
                             HStack {
-                                Text("渲染引擎")
+                                Text("当前流体主题")
                                 Spacer()
-                                Text("100% Pure SwiftUI Native")
-                                    .foregroundColor(.secondary)
+                                FloatingThemeSelector()
                             }
                             .font(.system(size: 13))
                             
                             HStack {
-                                Text("视觉规范")
+                                Text("渲染架构")
                                 Spacer()
-                                Text("iOS 27 Ultra Liquid Glass")
+                                Text("Pure SwiftUI + UltraThinMaterial")
                                     .foregroundColor(.secondary)
                             }
                             .font(.system(size: 13))
                         }
                         .padding(20)
-                        .liquidGlassCard(cornerRadius: 24)
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .stroke(Color.white.opacity(0.25), lineWidth: 1.5)
+                        )
                     }
                     .padding()
                 }
@@ -872,6 +887,7 @@ struct FilterPill: View {
     let title: String
     let filterKey: String
     let selected: String
+    let theme: AppTheme
     let action: () -> Void
     
     var isSelected: Bool { selected == filterKey }
@@ -888,16 +904,16 @@ struct FilterPill: View {
                 .padding(.vertical, 9)
                 .background(
                     isSelected ?
-                    LinearGradient(colors: [.cyan.opacity(0.4), .purple.opacity(0.5)], startPoint: .leading, endPoint: .trailing) :
+                    theme.gradient.opacity(0.5) :
                     LinearGradient(colors: [Color.white.opacity(0.08), Color.white.opacity(0.04)], startPoint: .leading, endPoint: .trailing)
                 )
                 .foregroundColor(isSelected ? .white : .white.opacity(0.7))
                 .cornerRadius(20)
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(isSelected ? Color.white.opacity(0.8) : Color.white.opacity(0.2), lineWidth: 1.5)
+                        .stroke(isSelected ? Color.white.opacity(0.85) : Color.white.opacity(0.2), lineWidth: 1.5)
                 )
-                .shadow(color: isSelected ? Color.cyan.opacity(0.35) : .clear, radius: 8)
+                .shadow(color: isSelected ? theme.primaryColor.opacity(0.35) : .clear, radius: 8)
         }
     }
 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E0A1010128000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1000128000001 /* ContentView.swift */; };
 		E0A1010228000002 /* PanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1000228000002 /* PanelViewModel.swift */; };
+		E0A1010328000003 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1000328000003 /* ThemeManager.swift */; };
 		E0A1010528000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0A1000528000005 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -16,6 +17,7 @@
 		E0A1000028000000 /* TGPanel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TGPanel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A1000128000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E0A1000228000002 /* PanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelViewModel.swift; sourceTree = "<group>"; };
+		E0A1000328000003 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		E0A1000528000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E0A1000628000006 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -44,6 +46,7 @@
 			children = (
 				E0A1000128000001 /* ContentView.swift */,
 				E0A1000228000002 /* PanelViewModel.swift */,
+				E0A1000328000003 /* ThemeManager.swift */,
 				E0A1000528000005 /* Assets.xcassets */,
 				E0A1000628000006 /* Info.plist */,
 			);
@@ -129,6 +132,7 @@
 			files = (
 				E0A1010128000001 /* ContentView.swift in Sources */,
 				E0A1010228000002 /* PanelViewModel.swift in Sources */,
+				E0A1010328000003 /* ThemeManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,11 +148,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TGPanelApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 3.5.0;
+				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgpanel.liquidglass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -166,11 +170,11 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TGPanelApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 3.5.0;
+				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgpanel.liquidglass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

@@ -4,15 +4,8 @@ const path = require('path');
 const baseDir = __dirname;
 const tgPanelDir = path.join(baseDir, 'TGPanelApp');
 const xcodeDir = path.join(baseDir, 'TGPanel.xcodeproj');
-const workflowsDir = path.join(baseDir, '.github', 'workflows');
 
-// Remove old files if any
-['AppDelegate.swift', 'SceneDelegate.swift', 'ViewController.swift'].forEach(f => {
-  const p = path.join(tgPanelDir, f);
-  if (fs.existsSync(p)) fs.unlinkSync(p);
-});
-
-// Update Xcode project.pbxproj for Pure SwiftUI
+// Update Xcode project.pbxproj for Pure SwiftUI with ThemeManager
 const pbxproj = `// !$*UTF8*$!
 {
 	archiveVersion = 1;
@@ -24,6 +17,7 @@ const pbxproj = `// !$*UTF8*$!
 /* Begin PBXBuildFile section */
 		E0A1010128000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1000128000001 /* ContentView.swift */; };
 		E0A1010228000002 /* PanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1000228000002 /* PanelViewModel.swift */; };
+		E0A1010328000003 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A1000328000003 /* ThemeManager.swift */; };
 		E0A1010528000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0A1000528000005 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +25,7 @@ const pbxproj = `// !$*UTF8*$!
 		E0A1000028000000 /* TGPanel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TGPanel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A1000128000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E0A1000228000002 /* PanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelViewModel.swift; sourceTree = "<group>"; };
+		E0A1000328000003 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		E0A1000528000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E0A1000628000006 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,6 +54,7 @@ const pbxproj = `// !$*UTF8*$!
 			children = (
 				E0A1000128000001 /* ContentView.swift */,
 				E0A1000228000002 /* PanelViewModel.swift */,
+				E0A1000328000003 /* ThemeManager.swift */,
 				E0A1000528000005 /* Assets.xcassets */,
 				E0A1000628000006 /* Info.plist */,
 			);
@@ -144,6 +140,7 @@ const pbxproj = `// !$*UTF8*$!
 			files = (
 				E0A1010128000001 /* ContentView.swift in Sources */,
 				E0A1010228000002 /* PanelViewModel.swift in Sources */,
+				E0A1010328000003 /* ThemeManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,11 +156,11 @@ const pbxproj = `// !$*UTF8*$!
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TGPanelApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 3.5.0;
+				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgpanel.liquidglass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -181,11 +178,11 @@ const pbxproj = `// !$*UTF8*$!
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TGPanelApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 3.5.0;
+				MARKETING_VERSION = 3.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgpanel.liquidglass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -238,61 +235,4 @@ const pbxproj = `// !$*UTF8*$!
 `;
 fs.writeFileSync(path.join(xcodeDir, 'project.pbxproj'), pbxproj.trim());
 
-// Update Info.plist for Pure SwiftUI
-const infoPlist = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>CFBundleDevelopmentRegion</key>
-    <string>zh_CN</string>
-    <key>CFBundleDisplayName</key>
-    <string>TG管理面板</string>
-    <key>CFBundleExecutable</key>
-    <string>$(EXECUTABLE_NAME)</string>
-    <key>CFBundleIdentifier</key>
-    <string>com.tgpanel.liquidglass</string>
-    <key>CFBundleInfoDictionaryVersion</key>
-    <string>6.0</string>
-    <key>CFBundleName</key>
-    <string>$(PRODUCT_NAME)</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>3.5.0</string>
-    <key>CFBundleVersion</key>
-    <string>5</string>
-    <key>LSRequiresIPhoneOS</key>
-    <true/>
-    <key>CFBundleIcons</key>
-    <dict>
-        <key>CFBundlePrimaryIcon</key>
-        <dict>
-            <key>CFBundleIconFiles</key>
-            <array>
-                <string>AppIcon</string>
-            </array>
-            <key>CFBundleIconName</key>
-            <string>AppIcon</string>
-        </dict>
-    </dict>
-    <key>UILaunchScreen</key>
-    <dict/>
-    <key>UIRequiredDeviceCapabilities</key>
-    <array>
-        <string>arm64</string>
-    </array>
-    <key>UISupportedInterfaceOrientations</key>
-    <array>
-        <string>UIInterfaceOrientationPortrait</string>
-    </array>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-    </dict>
-</dict>
-</plist>
-`;
-fs.writeFileSync(path.join(tgPanelDir, 'Info.plist'), infoPlist.trim());
-
-console.log('✅ 100% Pure Native SwiftUI architecture initialized (matching reference Kana/秋名山)!');
+console.log('✅ Xcode project updated with ThemeManager.swift!');
