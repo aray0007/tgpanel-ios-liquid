@@ -812,13 +812,13 @@ struct TransparentFilterPill: View {
                 .font(.system(size: 13, weight: isSelected ? .bold : .medium))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(isSelected ? .ultraThinMaterial : .ultraThinMaterial.opacity(0.3))
-                .background(isSelected ? Color.white.opacity(0.12) : Color.white.opacity(0.03))
+                .background(.ultraThinMaterial)
+                .background(isSelected ? Color.white.opacity(0.15) : Color.white.opacity(0.04))
                 .foregroundColor(isSelected ? .white : .white.opacity(0.6))
                 .cornerRadius(20)
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(isSelected ? Color.white.opacity(0.8) : Color.white.opacity(0.2), lineWidth: 1.2)
+                        .stroke(isSelected ? Color.white.opacity(0.85) : Color.white.opacity(0.2), lineWidth: 1.2)
                 )
                 .shadow(color: isSelected ? Color.black.opacity(0.3) : .clear, radius: 6)
         }
