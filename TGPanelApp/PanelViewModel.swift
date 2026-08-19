@@ -2,7 +2,12 @@ import SwiftUI
 
 // MARK: - Models
 struct AccountItem: Identifiable, Codable {
-    var id: String { String(db_id ?? (phone ?? UUID().uuidString)) }
+    var id: String {
+        if let db = db_id { return String(db) }
+        if let p = phone, !p.isEmpty { return p }
+        return UUID().uuidString
+    }
+    
     let db_id: Int?
     let phone: String?
     let name: String?
