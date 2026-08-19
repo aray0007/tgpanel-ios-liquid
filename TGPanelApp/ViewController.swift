@@ -10,7 +10,10 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
-        config.preferences.javaScriptEnabled = true
+        
+        let preferences = WKWebpagePreferences()
+        preferences.allowsContentJavaScript = true
+        config.defaultWebpagePreferences = preferences
         
         webView = WKWebView(frame: view.bounds, configuration: config)
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -32,10 +35,10 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     private func loadLocalContent() {
         if let wwwPath = Bundle.main.path(forResource: "index", ofType: "html", inDirectory: "www") {
             let url = URL(fileURLWithPath: wwwPath)
-            webView.loadFileURL(url, allowingReadAccessToURL: url.deletingLastPathComponent())
+            webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         } else if let indexPath = Bundle.main.path(forResource: "index", ofType: "html") {
             let url = URL(fileURLWithPath: indexPath)
-            webView.loadFileURL(url, allowingReadAccessToURL: url.deletingLastPathComponent())
+            webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         }
     }
 }
