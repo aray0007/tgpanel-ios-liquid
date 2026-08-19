@@ -84,7 +84,7 @@ class PanelViewModel: ObservableObject {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
-                self?.fetchTasks()
+                await self?.fetchTasks()
             }
         }
     }
