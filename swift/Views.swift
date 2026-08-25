@@ -202,27 +202,23 @@ struct AccountDetailSheet: View {
     let syncTime: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            AccountAvatar(initial: account.initial)
-            Eyebrow(text: "ACCOUNT DETAIL")
-            Text(account.phone).font(.system(size: 26, weight: .semibold, design: .rounded))
-            StatusBadge(status: account.status)
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                detailCell("Remark", account.remark)
-                detailCell("Last activity", account.lastActivity)
-                detailCell("Last sync", syncTime)
-                detailCell("Mode", "Demo")
+        ZStack {
+            Color.clear.background(.ultraThinMaterial).ignoresSafeArea()
+            
+            VStack(alignment: .leading, spacing: 18) {
+                AccountAvatar(initial: account.initial)
+                Eyebrow(text: "ACCOUNT DETAIL")
+                Text(account.phone).font(.system(size: 26, weight: .semibold, design: .rounded))
+                StatusBadge(status: account.status)
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    detailCell("Remark", account.remark)
+                    detailCell("Last activity", account.lastActivity)
+                    detailCell("Last sync", syncTime)
+                    detailCell("Mode", "Demo")
+                }
+                Spacer()
             }
-            Spacer()
-        }
-        .padding(24)
-        .presentationBackground {
-            if #available(iOS 26.0, *) {
-                GlassTheme.groupedBackground.opacity(0.22)
-                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 28))
-            } else {
-                Color.clear.background(.ultraThinMaterial)
-            }
+            .padding(24)
         }
     }
 
