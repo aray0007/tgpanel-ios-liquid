@@ -221,7 +221,6 @@ struct AccountDetailSheet: View {
             .padding(24)
         }
     }
-    }
 
     private func detailCell(_ title: String, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
