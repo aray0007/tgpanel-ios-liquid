@@ -1,4 +1,3 @@
-
 import SwiftUI
 import UIKit
 
@@ -28,6 +27,9 @@ struct GlassEffectContainer<Content: View>: View {
         content
     }
 }
+
+import SwiftUI
+import UIKit
 
 // Adapted from GlobalRefresh-PiP's Liquid Glass UI patterns.
 // Attribution: CaiWanFeng (original PiP) and Yoroin (GlobalRefresh-PiP).
@@ -89,14 +91,9 @@ struct GlassSurface<Content: View>: View {
         content
             .padding(contentPadding)
             .background {
-                if #available(iOS 26.0, *) {
-                    shape
-                        .fill(tint.opacity(0.22))
-                        .glassEffect(.regular.interactive(), in: shape)
-                } else {
-                    shape
-                        .fill(.ultraThinMaterial)
-                        .overlay(shape.fill(tint.opacity(0.38)))
+                ZStack {
+                    ReferenceGlassMaterial(cornerRadius: radius, isInteractive: true)
+                    tint.opacity(0.12)
                 }
             }
             .overlay(shape.strokeBorder(GlassTheme.glassEdge, lineWidth: 1))
@@ -120,7 +117,12 @@ struct GlassCard<Content: View>: View {
         let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
         content
             .padding(16)
-            .background(glassBackground(shape: shape))
+            .background {
+                ZStack {
+                    ReferenceGlassMaterial(cornerRadius: radius, isInteractive: true)
+                    tint.opacity(0.12)
+                }
+            }
             .overlay(shape.strokeBorder(GlassTheme.glassEdge, lineWidth: 1))
             .clipShape(shape)
             .shadow(color: .black.opacity(0.16), radius: 16, x: 0, y: 10)
@@ -155,14 +157,9 @@ struct GlassCapsule<Content: View>: View {
             .padding(.horizontal, 11)
             .frame(minHeight: 34)
             .background {
-                if #available(iOS 26.0, *) {
-                    shape
-                        .fill(tint.opacity(0.22))
-                        .glassEffect(.regular.interactive(), in: shape)
-                } else {
-                    shape
-                        .fill(.ultraThinMaterial)
-                        .overlay(shape.fill(tint.opacity(0.38)))
+                ZStack {
+                    ReferenceGlassMaterial(cornerRadius: 18, isInteractive: true)
+                    tint.opacity(0.10)
                 }
             }
             .overlay(shape.strokeBorder(GlassTheme.glassEdge, lineWidth: 1))

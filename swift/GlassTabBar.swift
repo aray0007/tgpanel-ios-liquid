@@ -43,7 +43,7 @@ struct GlassTabBar: View {
             }
             .foregroundStyle(selection == index ? GlassTheme.teal : GlassTheme.secondary)
         }
-        .buttonStyle(LiquidGlassTabItemStyle(isSelected: selection == index))
+        .buttonStyle(PiPReferenceLiquidGlassButtonStyle(radius: 18, tint: selection == index ? GlassTheme.teal : GlassTheme.groupedBackground))
         .glassEffectID(index, in: tabNamespace)
     }
 

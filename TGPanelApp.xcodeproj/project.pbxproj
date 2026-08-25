@@ -14,6 +14,8 @@
 		A00000000000000000000005 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000015 /* Views.swift */; };
 		A00000000000000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000017 /* Assets.xcassets */; };
 		A00000000000000000000008 /* GlassTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000018 /* GlassTabBar.swift */; };
+		A00000000000000000000009 /* ReferenceGlassMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000019 /* ReferenceGlassMaterial.swift */; };
+		A0000000000000000000000A /* ReferenceLiquidGlassStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000001A /* ReferenceLiquidGlassStyles.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		A00000000000000000000016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A00000000000000000000017 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A00000000000000000000018 /* GlassTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift/GlassTabBar.swift; sourceTree = "<group>"; };
+		A00000000000000000000019 /* ReferenceGlassMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift/ReferenceGlassMaterial.swift; sourceTree = "<group>"; };
+		A0000000000000000000001A /* ReferenceLiquidGlassStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift/ReferenceLiquidGlassStyles.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,7 +38,7 @@
 
 /* Begin PBXGroup section */
 		A00000000000000000000030 = {isa = PBXGroup; children = ( A00000000000000000000031, A00000000000000000000033, A00000000000000000000040, ); sourceTree = "<group>"; };
-		A00000000000000000000031 /* Sources */ = {isa = PBXGroup; children = ( A00000000000000000000011, A00000000000000000000012, A00000000000000000000013, A00000000000000000000014, A00000000000000000000015, A00000000000000000000018, ); name = Sources; path = .; sourceTree = "<group>"; };
+		A00000000000000000000031 /* Sources */ = {isa = PBXGroup; children = ( A00000000000000000000011, A00000000000000000000012, A00000000000000000000013, A00000000000000000000014, A00000000000000000000015, A00000000000000000000018, A00000000000000000000019, A0000000000000000000001A, ); name = Sources; path = .; sourceTree = "<group>"; };
 		A00000000000000000000033 /* Resources */ = {isa = PBXGroup; children = ( A00000000000000000000016, A00000000000000000000017, ); name = Resources; path = .; sourceTree = "<group>"; };
 		A00000000000000000000040 /* Products */ = {isa = PBXGroup; children = ( A00000000000000000000010, ); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
@@ -52,7 +56,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A00000000000000000000070 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = ( A00000000000000000000001, A00000000000000000000002, A00000000000000000000003, A00000000000000000000004, A00000000000000000000005, A00000000000000000000008, ); runOnlyForDeploymentPostprocessing = 0; };
+		A00000000000000000000070 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = ( A00000000000000000000001, A00000000000000000000002, A00000000000000000000003, A00000000000000000000004, A00000000000000000000005, A00000000000000000000008, A00000000000000000000009, A0000000000000000000000A, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */

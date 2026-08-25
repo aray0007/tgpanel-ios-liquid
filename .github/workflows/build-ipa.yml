@@ -1,4 +1,4 @@
-name: Build TG Panel Liquid Glass IPA
+name: Build TG Panel Direct Glass IPA
 
 on:
   push:
@@ -31,11 +31,11 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r build/TGPanelApp.xcarchive/Products/Applications/TGPanelApp.app Payload/
-          zip -r -9 TGPanel_LiquidGlass.ipa Payload
-          ls -lh TGPanel_LiquidGlass.ipa
+          zip -r -9 TGPanel_DirectGlass_Build2.ipa Payload
+          ls -lh TGPanel_DirectGlass_Build2.ipa
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TGPanel_LiquidGlass_IPA
-          path: TGPanel_LiquidGlass.ipa
+          name: TGPanel_DirectGlass_Build2_IPA
+          path: TGPanel_DirectGlass_Build2.ipa

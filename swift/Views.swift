@@ -153,7 +153,7 @@ struct AccountsView: View {
                         Button { syncTime = "just now" } label: {
                             Image(systemName: "arrow.clockwise").frame(width: 42, height: 42)
                         }
-                        .buttonStyle(LiquidGlassButtonStyle(tint: GlassTheme.groupedBackground, radius: 15))
+                        .buttonStyle(PiPReferenceLiquidGlassButtonStyle(radius: 15, tint: GlassTheme.groupedBackground))
                         .accessibilityLabel("Refresh accounts")
                     }
                     GlassSurface(radius: 15, tint: GlassTheme.groupedBackground, contentPadding: 14) {
@@ -221,6 +221,7 @@ struct AccountDetailSheet: View {
             .padding(24)
         }
     }
+    }
 
     private func detailCell(_ title: String, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -260,7 +261,7 @@ struct SettingsView: View {
                             Divider().opacity(0.15)
                             settingRow(icon: "paintbrush", title: "Appearance", subtitle: "Liquid Glass · Dark", trailing: "chevron.right")
                             Divider().opacity(0.15)
-                            settingRow(icon: "info.circle", title: "About TG Panel", subtitle: "Prototype build 0.1", trailing: "chevron.right")
+                            settingRow(icon: "info.circle", title: "About TG Panel", subtitle: "Liquid Glass build 0.2.0 (2)", trailing: "chevron.right")
                         }
                     }
                     GlassCard(radius: 19) {

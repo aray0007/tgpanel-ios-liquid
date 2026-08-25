@@ -23,7 +23,7 @@ struct TopBar: View {
                     .font(.system(size: 18, weight: .medium))
                     .frame(width: 42, height: 42)
             }
-            .buttonStyle(LiquidGlassButtonStyle(tint: GlassTheme.groupedBackground, radius: 15))
+            .buttonStyle(PiPReferenceLiquidGlassButtonStyle(radius: 15, tint: GlassTheme.groupedBackground))
             .accessibilityLabel("Settings")
         }
     }
@@ -43,7 +43,7 @@ struct ConnectionPill: View {
             .font(.system(size: 11, weight: .medium, design: .rounded))
             .foregroundStyle(GlassTheme.teal)
         }
-        .buttonStyle(LiquidGlassCapsuleButtonStyle(tint: GlassTheme.teal))
+        .buttonStyle(PiPReferenceGlassCapsuleButtonStyle(tint: GlassTheme.teal))
         .accessibilityLabel("Refresh demo data")
     }
 }
@@ -142,6 +142,6 @@ struct AccountRow: View {
             .padding(12)
             .contentShape(Rectangle())
         }
-        .buttonStyle(LiquidGlassButtonStyle(tint: GlassTheme.groupedBackground, radius: 18))
+        .buttonStyle(PiPReferenceLiquidGlassButtonStyle(radius: 18, tint: GlassTheme.groupedBackground))
     }
 }
