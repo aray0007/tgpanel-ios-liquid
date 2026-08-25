@@ -1,4 +1,4 @@
-name: Build iOS IPA
+name: Build TG Panel iOS 26 IPA
 
 on:
   push:
@@ -17,24 +17,25 @@ jobs:
 
       - name: Build and Archive
         run: |
-          xcodebuild -project TGPanel.xcodeproj \
-            -scheme TGPanel \
+          xcodebuild -project TGPanelApp.xcodeproj \
+            -scheme TGPanelApp \
             -configuration Release \
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
-            -archivePath build/TGPanel.xcarchive \
+            -archivePath build/TGPanelApp.xcarchive \
             archive \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
 
       - name: Package Payload into IPA
         run: |
           mkdir -p Payload
-          cp -r build/TGPanel.xcarchive/Products/Applications/TGPanel.app Payload/
-          zip -r -9 TGPanel_LiquidGlass.ipa Payload
-          ls -lh TGPanel_LiquidGlass.ipa
+          cp -r build/TGPanelApp.xcarchive/Products/Applications/TGPanelApp.app Payload/
+          zip -r -9 TGPanel_iOS26.ipa Payload
+          ls -lh TGPanel_iOS26.ipa
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TGPanel_LiquidGlass_IPA
-          path: TGPanel_LiquidGlass.ipa
+          name: TGPanel_iOS26_IPA
+          path: TGPanel_iOS26.ipa
