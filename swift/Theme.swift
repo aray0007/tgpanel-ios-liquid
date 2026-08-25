@@ -1,19 +1,22 @@
 
+import SwiftUI
+import UIKit
+
 // MARK: - Compiler Compatibility Shims
-struct GlassEffectOption {
-    func interactive() -> GlassEffectOption { self }
+struct GlassEffectStyle {
+    static var regular: GlassEffectStyle { GlassEffectStyle() }
+    func interactive() -> GlassEffectStyle { self }
 }
-extension GlassEffectOption {
-    static var regular: GlassEffectOption { GlassEffectOption() }
-}
+
 extension View {
-    func glassEffect(_ style: Any? = nil, in shape: some Shape = RoundedRectangle(cornerRadius: 18, style: .continuous)) -> some View {
+    func glassEffect(_ style: GlassEffectStyle = .regular, in shape: some Shape = RoundedRectangle(cornerRadius: 18, style: .continuous)) -> some View {
         self
     }
     func glassEffectID(_ id: AnyHashable, in namespace: Namespace.ID) -> some View {
         self
     }
 }
+
 struct GlassEffectContainer<Content: View>: View {
     let spacing: CGFloat
     let content: Content
@@ -25,9 +28,6 @@ struct GlassEffectContainer<Content: View>: View {
         content
     }
 }
-
-import SwiftUI
-import UIKit
 
 // Adapted from GlobalRefresh-PiP's Liquid Glass UI patterns.
 // Attribution: CaiWanFeng (original PiP) and Yoroin (GlobalRefresh-PiP).
