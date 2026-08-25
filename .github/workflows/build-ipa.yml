@@ -1,4 +1,4 @@
-name: Build TG Panel iOS 26 IPA
+name: Build TG Panel Liquid Glass IPA
 
 on:
   push:
@@ -31,11 +31,11 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r build/TGPanelApp.xcarchive/Products/Applications/TGPanelApp.app Payload/
-          zip -r -9 TGPanel_iOS26.ipa Payload
-          ls -lh TGPanel_iOS26.ipa
+          zip -r -9 TGPanel_LiquidGlass.ipa Payload
+          ls -lh TGPanel_LiquidGlass.ipa
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TGPanel_iOS26_IPA
-          path: TGPanel_iOS26.ipa
+          name: TGPanel_LiquidGlass_IPA
+          path: TGPanel_LiquidGlass.ipa

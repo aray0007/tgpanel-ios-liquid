@@ -2,6 +2,8 @@
 
 这是一个 iOS 26 SwiftUI Liquid Glass 界面原型，当前只使用本地演示数据。
 
+Liquid Glass 组件模式参考并适配自 [GlobalRefresh-PiP](https://github.com/Yoroin/GlobalRefresh-PiP)，保留原作者 CaiWanFeng 与维护者 Yoroin 的署名，详见 `NOTICE`。只复用了 UI 玻璃效果写法，没有引入参考项目的 PiP、高刷或后台保活业务逻辑。
+
 ## SwiftUI 文件
 
 将 `swift/` 目录中的 5 个文件加入一个新的 iOS App 项目：

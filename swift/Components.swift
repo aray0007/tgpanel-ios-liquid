@@ -23,7 +23,7 @@ struct TopBar: View {
                     .font(.system(size: 18, weight: .medium))
                     .frame(width: 42, height: 42)
             }
-            .buttonStyle(.glass)
+            .buttonStyle(LiquidGlassButtonStyle(tint: GlassTheme.groupedBackground, radius: 15))
             .accessibilityLabel("Settings")
         }
     }
@@ -42,11 +42,8 @@ struct ConnectionPill: View {
             }
             .font(.system(size: 11, weight: .medium, design: .rounded))
             .foregroundStyle(GlassTheme.teal)
-            .padding(.horizontal, 11)
-            .frame(minHeight: 34)
         }
-        .buttonStyle(.glass)
-        .clipShape(Capsule())
+        .buttonStyle(LiquidGlassCapsuleButtonStyle(tint: GlassTheme.teal))
         .accessibilityLabel("Refresh demo data")
     }
 }
@@ -71,7 +68,23 @@ struct MetricCard: View {
         }
         .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
         .padding(14)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 19, style: .continuous))
+        .background {
+            if #available(iOS 26.0, *) {
+                RoundedRectangle(cornerRadius: 19, style: .continuous)
+                    .fill(tint.opacity(0.10))
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 19))
+            } else {
+                RoundedRectangle(cornerRadius: 19, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay(tint.opacity(0.10))
+            }
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 19, style: .continuous)
+                .strokeBorder(GlassTheme.glassEdge, lineWidth: 1)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 19, style: .continuous))
+        .shadow(color: tint.opacity(0.12), radius: 12, x: 0, y: 7)
     }
 }
 
@@ -92,7 +105,7 @@ struct ActivityRow: View {
                 .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(tint)
                 .frame(width: 28, height: 28)
-                .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .background(tint.opacity(0.12), in: .rect(cornerRadius: 9))
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.title).font(.system(size: 12, weight: .semibold, design: .rounded))
                 Text(item.detail).font(.system(size: 10, design: .rounded)).foregroundStyle(GlassTheme.secondary)
@@ -129,7 +142,6 @@ struct AccountRow: View {
             .padding(12)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .buttonStyle(LiquidGlassButtonStyle(tint: GlassTheme.groupedBackground, radius: 18))
     }
 }

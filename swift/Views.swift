@@ -4,19 +4,29 @@ struct RootTabView: View {
     @State private var selectedTab = 0
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            OverviewView(selectedTab: $selectedTab)
-                .tabItem { Label("Overview", systemImage: "rectangle.grid.1x2") }
-                .tag(0)
-            AccountsView()
-                .tabItem { Label("Accounts", systemImage: "person.2") }
-                .tag(1)
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "ellipsis") }
-                .tag(2)
+        ZStack {
+            LiquidGlassBackdrop()
+            Group {
+                switch selectedTab {
+                case 0:
+                    OverviewView(selectedTab: $selectedTab)
+                case 1:
+                    AccountsView()
+                default:
+                    SettingsView()
+                }
+            }
+            .id(selectedTab)
+            .transition(.opacity)
         }
-        .tint(GlassTheme.teal)
-        .background(GlassTheme.background)
+        .animation(.easeOut(duration: 0.22), value: selectedTab)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            GlassTabBar(selection: $selectedTab)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+        }
+        .preferredColorScheme(.dark)
     }
 }
 
@@ -25,21 +35,31 @@ struct OverviewView: View {
     @State private var syncTime = "just now"
     private let accounts = DemoData.accounts
 
+    private var overviewTitle: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Eyebrow(text: "OVERVIEW")
+            Text("Good morning, operator.")
+                .font(.system(size: 34, weight: .semibold, design: .rounded))
+                .tracking(-1.2)
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     TopBar { selectedTab = 2 }
                         .padding(.bottom, 34)
-                    HStack(alignment: .bottom) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Eyebrow(text: "OVERVIEW")
-                            Text("Good morning, operator.")
-                                .font(.system(size: 34, weight: .semibold, design: .rounded))
-                                .tracking(-1.2)
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .bottom, spacing: 12) {
+                            overviewTitle
+                            Spacer(minLength: 8)
+                            ConnectionPill(syncTime: syncTime) { syncTime = "just now" }
                         }
-                        Spacer(minLength: 8)
-                        ConnectionPill(syncTime: syncTime) { syncTime = "just now" }
+                        VStack(alignment: .leading, spacing: 14) {
+                            overviewTitle
+                            ConnectionPill(syncTime: syncTime) { syncTime = "just now" }
+                        }
                     }
                     .padding(.bottom, 20)
                     GlassCard(radius: 27) {
@@ -52,12 +72,12 @@ struct OverviewView: View {
                                         .tracking(-4)
                                 }
                                 Spacer()
-                                Text("DEMO MODE")
-                                    .font(.system(size: 9, weight: .bold, design: .rounded))
-                                    .tracking(1)
-                                    .foregroundStyle(GlassTheme.teal)
-                                    .padding(8)
-                                    .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                                GlassCapsule(tint: GlassTheme.teal) {
+                                    Text("DEMO MODE")
+                                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                                        .tracking(1)
+                                        .foregroundStyle(GlassTheme.teal)
+                                }
                             }
                             HStack {
                                 Text("Last sync \(syncTime)")
@@ -103,7 +123,7 @@ struct OverviewView: View {
                 .padding(.bottom, 24)
             }
             .scrollIndicators(.hidden)
-            .background(GlassTheme.background)
+            .background(Color.clear)
         }
     }
 }
@@ -133,22 +153,22 @@ struct AccountsView: View {
                         Button { syncTime = "just now" } label: {
                             Image(systemName: "arrow.clockwise").frame(width: 42, height: 42)
                         }
-                        .buttonStyle(.glass)
+                        .buttonStyle(LiquidGlassButtonStyle(tint: GlassTheme.groupedBackground, radius: 15))
                         .accessibilityLabel("Refresh accounts")
                     }
-                    HStack(spacing: 10) {
-                        Image(systemName: "magnifyingglass").foregroundStyle(GlassTheme.secondary)
-                        TextField("Search accounts", text: $searchText)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                        if !searchText.isEmpty {
-                            Button { searchText = "" } label: { Image(systemName: "xmark.circle.fill") }
-                                .foregroundStyle(GlassTheme.secondary)
+                    GlassSurface(radius: 15, tint: GlassTheme.groupedBackground, contentPadding: 14) {
+                        HStack(spacing: 10) {
+                            Image(systemName: "magnifyingglass").foregroundStyle(GlassTheme.secondary)
+                            TextField("Search accounts", text: $searchText)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                            if !searchText.isEmpty {
+                                Button { searchText = "" } label: { Image(systemName: "xmark.circle.fill") }
+                                    .foregroundStyle(GlassTheme.secondary)
+                            }
                         }
+                        .frame(minHeight: 48)
                     }
-                    .padding(.horizontal, 14)
-                    .frame(minHeight: 48)
-                    .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
                     HStack {
                         Text("\(filteredAccounts.count) accounts")
                         Spacer()
@@ -167,7 +187,7 @@ struct AccountsView: View {
                 .padding(.bottom, 24)
             }
             .scrollIndicators(.hidden)
-            .background(GlassTheme.background)
+            .background(Color.clear)
             .sheet(item: $selectedAccount) { account in
                 AccountDetailSheet(account: account, syncTime: syncTime)
                     .presentationDetents([.medium])
@@ -182,23 +202,27 @@ struct AccountDetailSheet: View {
     let syncTime: String
 
     var body: some View {
-        ZStack {
-            GlassTheme.background.ignoresSafeArea()
-            
-            VStack(alignment: .leading, spacing: 18) {
-                AccountAvatar(initial: account.initial)
-                Eyebrow(text: "ACCOUNT DETAIL")
-                Text(account.phone).font(.system(size: 26, weight: .semibold, design: .rounded))
-                StatusBadge(status: account.status)
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                    detailCell("Remark", account.remark)
-                    detailCell("Last activity", account.lastActivity)
-                    detailCell("Last sync", syncTime)
-                    detailCell("Mode", "Demo")
-                }
-                Spacer()
+        VStack(alignment: .leading, spacing: 18) {
+            AccountAvatar(initial: account.initial)
+            Eyebrow(text: "ACCOUNT DETAIL")
+            Text(account.phone).font(.system(size: 26, weight: .semibold, design: .rounded))
+            StatusBadge(status: account.status)
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                detailCell("Remark", account.remark)
+                detailCell("Last activity", account.lastActivity)
+                detailCell("Last sync", syncTime)
+                detailCell("Mode", "Demo")
             }
-            .padding(24)
+            Spacer()
+        }
+        .padding(24)
+        .presentationBackground {
+            if #available(iOS 26.0, *) {
+                GlassTheme.groupedBackground.opacity(0.22)
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 28))
+            } else {
+                Color.clear.background(.ultraThinMaterial)
+            }
         }
     }
 
@@ -209,7 +233,21 @@ struct AccountDetailSheet: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+        .background {
+            if #available(iOS 26.0, *) {
+                RoundedRectangle(cornerRadius: 13, style: .continuous)
+                    .fill(GlassTheme.groupedBackground.opacity(0.16))
+                    .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 13))
+            } else {
+                RoundedRectangle(cornerRadius: 13, style: .continuous)
+                    .fill(.ultraThinMaterial)
+            }
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 13, style: .continuous)
+                .strokeBorder(GlassTheme.glassEdge, lineWidth: 1)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
     }
 }
 
@@ -245,7 +283,7 @@ struct SettingsView: View {
                 .padding(20)
             }
             .scrollIndicators(.hidden)
-            .background(GlassTheme.background)
+            .background(Color.clear)
         }
     }
 
@@ -254,7 +292,7 @@ struct SettingsView: View {
             Image(systemName: icon)
                 .foregroundStyle(GlassTheme.teal)
                 .frame(width: 30, height: 30)
-                .background(GlassTheme.teal.opacity(0.12), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .background(GlassTheme.teal.opacity(0.12), in: .rect(cornerRadius: 9))
             VStack(alignment: .leading, spacing: 4) {
                 Text(title).font(.system(size: 13, weight: .semibold, design: .rounded))
                 Text(subtitle).font(.system(size: 10, design: .rounded)).foregroundStyle(GlassTheme.secondary)

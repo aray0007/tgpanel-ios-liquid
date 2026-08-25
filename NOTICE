@@ -1,0 +1,16 @@
+TG Panel UI
+
+This project adapts Liquid Glass UI patterns from GlobalRefresh-PiP.
+
+Original project:
+https://github.com/CaiWanFeng/PiP
+Original author: CaiWanFeng
+
+Current reference project:
+https://github.com/Yoroin/GlobalRefresh-PiP
+Maintainer: Yoroin
+
+When modifying, distributing, or publishing this app, retain attribution to
+both CaiWanFeng and Yoroin, together with the corresponding project links.
+The PiP, high-refresh-rate, and background-keep-alive business logic from the
+reference project is not included in TG Panel.
